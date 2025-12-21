@@ -11,13 +11,13 @@ with st.container():
     col1, col2 = st.columns(2)
     # X: 交換容量
     with col1:
-        capacity_per_liter = st.number_input("每公升樹脂交換量 (X)", value=40.0, step=1.0)
+        capacity_per_liter = st.number_input("每公升樹脂交換當量 (g/L)", value=40.0, step=1.0)
     # Y: 樹脂量
     with col2:
-        resin_volume = st.number_input("樹脂總量 (Y) 公升", value=150.0, step=10.0)
+        resin_volume = st.number_input("樹脂總量 (公升) ", value=150.0, step=10.0)
     
     # Z: 硬度
-    hardness = st.number_input("自來水硬度 (Z) ppm", value=100.0, step=10.0)
+    hardness = st.number_input("自來水硬度 (PPM) ", value=100.0, step=10.0)
 
 # --- 計算按鈕與邏輯 ---
 if st.button("開始計算", type="primary", use_container_width=True):
@@ -37,4 +37,5 @@ if st.button("開始計算", type="primary", use_container_width=True):
         c1.metric("理論極限造水", f"{theoretical_tons:.2f} 噸")
         c2.metric("建議設定 (70%)", f"{safe_tons:.2f} 噸", delta="安全設定")
         
+
         st.success(f"✅ 建議您將流量計設定在 **{safe_tons:.2f} 噸** 進行再生。")
