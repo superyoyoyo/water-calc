@@ -45,7 +45,7 @@ elif calculation_type == "滿床系統 (2BT)":
     # 1. 設定輸入框 (Input)
     radius = st.number_input("桶槽半徑 (cm)", value=50.0)
     height = st.number_input("樹脂層高度 (cm)", value=120.0)
-    
+    size = st.number_input("FRP SIZE", value=1354.0)
     # 2. 設定按鈕與公式 (Logic)
     if st.button("計算體積"):
         # 圓柱體積公式 V = π * r² * h
@@ -69,6 +69,7 @@ elif calculation_type == "陰離子系統 (Anion)":
 elif calculation_type == "混床系統 (MB)":
     st.header("🔄 混床系統計算")
     st.write("🚧 功能開發中...")
+
 
 
 
