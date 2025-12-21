@@ -8,7 +8,7 @@ st.title("💧 水處理工程計算機")
 # 這裡我們做一個下拉選單，讓使用者選擇要算什麼
 calculation_type = st.selectbox(
     "請選擇計算項目：",
-    ["軟化系統 (Softener)", "陽離子系統 (Cation)", "陰離子系統 (Anion)", "混床系統 (MB)"]
+    ["軟化系統 (Softener)", "滿床系統 (2BT)", "混床系統 (MB)"]
 )
 
 st.markdown("---") # 畫一條分隔線
@@ -46,7 +46,7 @@ elif calculation_type == "陽離子系統 (Cation)":
     # [輸入區] - 您可以自由修改這裡的文字和預設值
     col1, col2 = st.columns(2)
     with col1:
-        catex_cap = st.number_input("陽樹脂工交量 (eq/L)", value=1.8) # 舉例
+        catex_cap = st.number_input("陽樹脂交換容量 (eq/L)", value=1.8) # 舉例
     with col2:
         resin_vol = st.number_input("陽樹脂體積 (L)", value=100.0)
     
@@ -76,3 +76,4 @@ elif calculation_type == "陰離子系統 (Anion)":
 elif calculation_type == "混床系統 (MB)":
     st.header("🔄 混床系統計算")
     st.write("🚧 功能開發中...")
+
