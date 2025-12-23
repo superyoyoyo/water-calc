@@ -40,14 +40,14 @@ if calculation_type == "軟化系統 (Softener)":
 # 模式 B: 滿床系統 (這是新增的示範)
 # ==========================================
 elif calculation_type == "滿床系統 (2BT)":
-    st.header("📦 滿床樹脂量計算")
+    st.header("📦 滿床系統計算")
     
     # 1. 設定輸入框 (Input)
     radius = st.number_input("桶槽半徑 (cm)", value=50.0)
     height = st.number_input("樹脂層高度 (cm)", value=120.0)
     size = st.number_input("FRP SIZE", value=1354)
     # 2. 設定按鈕與公式 (Logic)
-    if st.button("計算體積"):
+    if st.button("計算滿床產能"):
         # 圓柱體積公式 V = π * r² * h
         import math
         volume_cm3 = math.pi * (radius ** 2) * height
@@ -56,6 +56,21 @@ elif calculation_type == "滿床系統 (2BT)":
         # 3. 顯示結果 (Output)
         st.write(f"桶槽截面積：{math.pi * (radius**2):.2f} cm²")
         st.success(f"所需樹脂量：**{volume_liter:.2f}** 公升")
+        col1, col2 = st.columns(2)
+    with col1:
+        x = st.number_input("樹脂交換容量 (g/L)", value=40.0)
+    with col2:
+        y = st.number_input("樹脂總量 (L)", value=150.0)
+    z = st.number_input("原水總硬度 (ppm CaCO3)", value=100.0)
+
+    # [計算與結果]
+    if st.button("計算軟化產能"):
+        if z <= 0:
+            st.error("硬度必須大於 0")
+        else:
+            ans = (x * y) / z
+            safe_ans = ans * 0.7
+            st.success(f"建議採水量：**{safe_ans:.2f}** 噸")
 # ==========================================
 # 模式 C: 陰離子系統 (預留給您填寫)
 # ==========================================
@@ -73,13 +88,13 @@ elif calculation_type == "混床系統 (MB)":
 # 模式 E: FRP 桶型號計算 (新增功能)
 # ==========================================
 elif calculation_type == "FRP桶濾材計算":
-    st.header("🛢️ FRP 桶濾材填充量計算")
+    st.header("🛢️ FRP 桶濾材量計算")
     st.info("輸入型號 (如 1054)，自動估算濾材公升數")
 
     # [輸入區]
     col1, col2 = st.columns([2, 1])
     with col1:
-        model_code = st.text_input("請輸入 FRP 桶型號", value="1054", placeholder="例如：1054, 844, 1354")
+        model_code = st.text_input("請輸入 FRP 桶型號", value="1054", placeholder="例如：1054, 1354")
     with col2:
         # 讓您可以微調填充率 (預設 70%)
         fill_percent = st.number_input("填充比例 (%)", value=70, step=5)
@@ -124,6 +139,7 @@ elif calculation_type == "FRP桶濾材計算":
 
             except Exception as e:
                 st.error(f"計算發生錯誤：{e}")
+
 
 
 
