@@ -8,7 +8,7 @@ st.title("💧水處理工程計算")
 # 這裡我們做一個下拉選單，讓使用者選擇要算什麼
 calculation_type = st.selectbox(
     "請選擇計算項目：",
-    ["軟化系統 (Softener)", "滿床系統 (2BT)", "混床系統 (MB)"]
+    ["軟化系統 (Softener)", "滿床系統 (2BT)", "混床系統 (MB)" ,"FRP桶濾材計算"]
 )
 
 st.markdown("---") # 畫一條分隔線
@@ -69,6 +69,61 @@ elif calculation_type == "陰離子系統 (Anion)":
 elif calculation_type == "混床系統 (MB)":
     st.header("🔄 混床系統計算")
     st.write("🚧 功能開發中...")
+# ==========================================
+# 模式 E: FRP 桶型號計算 (新增功能)
+# ==========================================
+elif calculation_type == "FRP桶濾材計算":
+    st.header("🛢️ FRP 桶濾材填充量計算")
+    st.info("輸入型號 (如 1054)，自動估算濾材公升數")
+
+    # [輸入區]
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        model_code = st.text_input("請輸入 FRP 桶型號", value="1054", placeholder="例如：1054, 844, 1354")
+    with col2:
+        # 讓您可以微調填充率 (預設 70%)
+        fill_percent = st.number_input("填充比例 (%)", value=70, step=5)
+
+    # [計算邏輯]
+    if st.button("計算填充量"):
+        # 1. 檢查輸入格式是否為數字
+        if not model_code.isdigit() or len(model_code) < 3:
+            st.error("❌ 格式錯誤！請輸入至少 3 碼數字 (例如 844 或 1054)")
+        else:
+            try:
+                # 2. 拆解型號 (最後兩碼是高度，前面是直徑)
+                h_inch = int(model_code[-2:])   # 取最後兩個字
+                d_inch = int(model_code[:-2])   # 取前面剩下的字
+                
+                # 3. 計算體積 (圓柱公式)
+                import math
+                radius_inch = d_inch / 2
+                area_sq_inch = math.pi * (radius_inch ** 2)
+                volume_cu_inch = area_sq_inch * h_inch
+                
+                # 4. 單位換算 (1 立方英吋 = 0.016387 公升)
+                total_liters = volume_cu_inch * 0.016387
+                
+                # 5. 計算建議填充量
+                fill_liters = total_liters * (fill_percent / 100)
+                
+                # 6. 計算包數 (假設一包 25L)
+                bags = fill_liters / 25
+                
+                # [顯示結果]
+                st.markdown("---")
+                st.subheader(f"📊 型號 {model_code} 計算結果")
+                
+                c1, c2, c3 = st.columns(3)
+                c1.metric("直徑 x 高度", f"{d_inch}\" x {h_inch}\"")
+                c2.metric("全桶總容積", f"{total_liters:.1f} L")
+                c3.metric(f"建議填充量 ({fill_percent}%)", f"{fill_liters:.1f} L", delta=f"約 {bags:.1f} 包")
+                
+                # 額外資訊：顯示常用的 65%~75% 範圍
+                st.caption(f"💡 參考：{total_liters*0.65:.1f}L (65%) ~ {total_liters*0.75:.1f}L (75%)")
+
+            except Exception as e:
+                st.error(f"計算發生錯誤：{e}")
 
 
 
