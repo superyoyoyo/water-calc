@@ -46,6 +46,7 @@ elif calculation_type == "滿床系統 (2BT)":
     radius = st.number_input("桶槽半徑 (cm)", value=50.0)
     height = st.number_input("樹脂層高度 (cm)", value=120.0)
     size = st.number_input("FRP SIZE", value=1354)
+    col1, col2 = st.columns(2)
     with col1:
         x = st.number_input("樹脂交換容量 (g/L)", value=40.0)
     with col2:
@@ -140,6 +141,7 @@ elif calculation_type == "FRP桶濾材計算":
 
             except Exception as e:
                 st.error(f"計算發生錯誤：{e}")
+
 
 
 
