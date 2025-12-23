@@ -50,7 +50,7 @@ elif calculation_type == "滿床系統 (2BT)":
         y = st.number_input("樹脂總量 (L)", value=150.0)
     z = st.number_input("原水總硬度 (ppm CaCO3)", value=100.0)
 
-    # [計算與結果]
+     # 2. 設定按鈕與公式 (Logic)
     if st.button("計算軟化產能"):
         if z <= 0:
             st.error("硬度必須大於 0")
@@ -58,18 +58,6 @@ elif calculation_type == "滿床系統 (2BT)":
             ans = (x * y) / z
             safe_ans = ans * 0.7
             st.success(f"建議採水量：**{safe_ans:.2f}** 噸")
-# ==========================================
-    # 2. 設定按鈕與公式 (Logic)
-    if st.button("計算滿床產能"):
-        # 圓柱體積公式 V = π * r² * h
-        import math
-        volume_cm3 = math.pi * (radius ** 2) * height
-        volume_liter = volume_cm3 / 1000  # 換算成公升
-        
-        # 3. 顯示結果 (Output)
-        st.write(f"桶槽截面積：{math.pi * (radius**2):.2f} cm²")
-        st.success(f"所需樹脂量：**{volume_liter:.2f}** 公升")
-        col1, col2 = st.columns(2)
     
 # 模式 C: 陰離子系統 (預留給您填寫)
 # ==========================================
@@ -138,6 +126,7 @@ elif calculation_type == "FRP桶濾材計算":
 
             except Exception as e:
                 st.error(f"計算發生錯誤：{e}")
+
 
 
 
