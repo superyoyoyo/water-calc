@@ -46,17 +46,6 @@ elif calculation_type == "滿床系統 (2BT)":
     radius = st.number_input("桶槽半徑 (cm)", value=50.0)
     height = st.number_input("樹脂層高度 (cm)", value=120.0)
     size = st.number_input("FRP SIZE", value=1354)
-    # 2. 設定按鈕與公式 (Logic)
-    if st.button("計算滿床產能"):
-        # 圓柱體積公式 V = π * r² * h
-        import math
-        volume_cm3 = math.pi * (radius ** 2) * height
-        volume_liter = volume_cm3 / 1000  # 換算成公升
-        
-        # 3. 顯示結果 (Output)
-        st.write(f"桶槽截面積：{math.pi * (radius**2):.2f} cm²")
-        st.success(f"所需樹脂量：**{volume_liter:.2f}** 公升")
-        col1, col2 = st.columns(2)
     with col1:
         x = st.number_input("樹脂交換容量 (g/L)", value=40.0)
     with col2:
@@ -72,6 +61,18 @@ elif calculation_type == "滿床系統 (2BT)":
             safe_ans = ans * 0.7
             st.success(f"建議採水量：**{safe_ans:.2f}** 噸")
 # ==========================================
+    # 2. 設定按鈕與公式 (Logic)
+    if st.button("計算滿床產能"):
+        # 圓柱體積公式 V = π * r² * h
+        import math
+        volume_cm3 = math.pi * (radius ** 2) * height
+        volume_liter = volume_cm3 / 1000  # 換算成公升
+        
+        # 3. 顯示結果 (Output)
+        st.write(f"桶槽截面積：{math.pi * (radius**2):.2f} cm²")
+        st.success(f"所需樹脂量：**{volume_liter:.2f}** 公升")
+        col1, col2 = st.columns(2)
+    
 # 模式 C: 陰離子系統 (預留給您填寫)
 # ==========================================
 elif calculation_type == "陰離子系統 (Anion)":
@@ -139,6 +140,7 @@ elif calculation_type == "FRP桶濾材計算":
 
             except Exception as e:
                 st.error(f"計算發生錯誤：{e}")
+
 
 
 
