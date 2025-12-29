@@ -37,46 +37,70 @@ if calculation_type == "軟化系統 (Softener)":
             st.success(f"建議採水量：**{safe_ans:.2f}** 噸")
 
 # ==========================================
-# 模式 B: 滿床系統 (這是新增的示範)
 # ==========================================
-# ==========================================
-# 模式 G: 滿床系統 (2BT) - 型號選單版
+# 模式 G: 滿床系統 (2BT) - 導電度計算版 (更新數據)
 # ==========================================
 elif calculation_type == "滿床系統 (2BT)":
-    st.header("📦 滿床系統 (2BT) 選型計算")
-    st.info("請選擇設備型號，系統將計算對應造水量")
+    st.header("📦 滿床系統 (2BT) 造水量計算")
+    st.info("計算基礎：原水導電度 / 1.5 = TDS，以陰離子交換量為基準")
 
-    # 1. 建立型號清單 (下拉選單)
-    # 您可以在這裡隨時增加新的型號
-    model_options = ["3000型", "5000型", "7000型", "9000型"]
-    
-    selected_2bt = st.selectbox("請選擇 2BT 型號：", model_options)
+    # --- 1. 定義型號與陰離子樹脂量的對照表 ---
+    # 根據您提供的數據更新
+    bt_data = {
+        "3000型": 150.0,
+        "5000型": 400.0,
+        "7000型": 600.0,
+        "9000型": 800.0
+    }
 
-    # 2. 預留公式計算區 (這裡我們先用假的數據佔位)
-    # 等之後討論好公式，我們只要修改這裡的 if/elif 邏輯即可
+    # --- 2. 建立輸入介面 ---
+    col1, col2 = st.columns(2)
     
-    output_water = 0.0 # 預設造水量
-    
-    if selected_2bt == "3000型":
-        output_water = 0 # 待填入 3000型的公式或數值
-    elif selected_2bt == "5000型":
-        output_water = 0 # 待填入 5000型的公式或數值
-    elif selected_2bt == "7000型":
-        output_water = 0 # 待填入 7000型的公式或數值
-    elif selected_2bt == "9000型":
-        output_water = 0 # 待填入 9000型的公式或數值
+    with col1:
+        # 下拉選單選擇型號
+        selected_model = st.selectbox("請選擇 2BT 型號", list(bt_data.keys()))
+        # 自動抓取對應的樹脂量
+        anion_vol = bt_data[selected_model]
+        st.write(f"📍 **{selected_model}** 陰離子樹脂量： `{anion_vol} 公升`")
+
+    with col2:
+        # 輸入導電度
+        conductivity = st.number_input("原水導電度 (μS/cm)", value=200.0, step=10.0)
+
+    # 設定參數：1公升陰離子可吸附 25克 (您可在此微調，或隱藏不讓修改)
+    k_val = st.number_input("陰樹脂吸附能力 (克/公升)", value=25.0, disabled=True) 
+    # disabled=True 代表鎖定不讓使用者改，若想開放修改請拿掉這個參數
 
     st.markdown("---")
 
-    # 3. 顯示結果區
-    st.subheader(f"📊 計算結果 - {selected_2bt}")
-    
-    # 使用 Metric 顯示大字體，看起來比較專業
-    # "待定公式" 的字樣等公式確定後可以拿掉
-    st.metric("預估週期造水量", f"{output_water} 噸", delta="公式待定義")
-    
-    # 這裡可以加一個說明，提醒使用者目前的狀態
-    st.caption("⚠️ 注意：目前的造水量數值尚未設定公式。")
+    # --- 3. 計算邏輯 ---
+    if st.button("計算週期造水量"):
+        if conductivity <= 0:
+            st.error("❌ 導電度必須大於 0")
+        else:
+            # 步驟 A: 算出礦物質量 (TDS)
+            tds_content = conductivity / 1.5
+            
+            # 步驟 B: 算出總吸附能力 (樹脂公升數 * 25克)
+            total_capacity = anion_vol * k_val
+            
+            # 步驟 C: 算出噸數 (總能力 / TDS)
+            # 公式推導： (L * g/L) / (g/噸) = 噸
+            water_tons = total_capacity / tds_content
+            
+            # --- 4. 顯示結果 ---
+            st.subheader(f"📊 計算結果 - {selected_model}")
+            
+            # 使用三欄顯示關鍵數據
+            c1, c2, c3 = st.columns(3)
+            c1.metric("原水 TDS (估算)", f"{tds_content:.1f} ppm")
+            c2.metric("總吸附能力", f"{total_capacity:,.0f} 克")
+            c3.metric("預估週期造水量", f"{water_tons:.1f} 噸")
+            
+            # 顯示詳細計算式 (讓使用者安心)
+            st.caption(
+                f"💡 計算公式：({anion_vol}公升 × {k_val}克) ÷ ({conductivity} ÷ 1.5) = {water_tons:.1f} 噸"
+            )
 # 模式 C: 陰離子系統 (預留給您填寫)
 # ==========================================
 elif calculation_type == "陰離子系統 (Anion)":
@@ -144,6 +168,7 @@ elif calculation_type == "FRP桶濾材計算":
 
             except Exception as e:
                 st.error(f"計算發生錯誤：{e}")
+
 
 
 
